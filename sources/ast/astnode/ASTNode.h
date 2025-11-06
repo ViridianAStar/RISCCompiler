@@ -1,0 +1,58 @@
+//
+// Created by bowma on 11/5/2025.
+//
+
+#ifndef RISCCOMPILER_ASTNODE_H
+#define RISCCOMPILER_ASTNODE_H
+#include <memory>
+#include <string>
+#include <utility>
+#include <vector>
+
+using STR = std::string;
+template<typename T>
+//standard vector shorthand
+using VEC = std::vector<T>;
+
+enum class ASTNodeType {
+    Variable,
+    Definition,
+    Operation,
+    Control
+};
+
+class ASTNode {
+public:
+    ASTNodeType type;
+    // possibly add meta type/subtype
+    STR nodeName;
+    STR value;
+    VEC<ASTNode> children;
+    // Line and Column MetaData
+    int line;
+    int column;
+
+    /**
+     * Initialize standard AST node
+     *
+     * @param type generic type
+     * @param line which line read from
+     * @param column which item on the line it was built from
+     * @param nodeName what is this node
+     * @param value what does this node contain
+     * @param children does this node have child nodes
+     */
+    explicit ASTNode(const ASTNodeType type, const int line, const int column, STR nodeName = "", STR value = "", VEC<ASTNode> children = {})
+    : type(type), nodeName(std::move(nodeName)), value(std::move(value)), children(std::move(children)), line(line), column(column) {}
+    [[nodiscard]] STR prettyPrint() const;
+
+    /**
+     * add child to list of child nodes
+     *
+     * @param child child node to add
+     */
+    void addChild(const ASTNode& child);
+};
+
+
+#endif //RISCCOMPILER_ASTNODE_H
