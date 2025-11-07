@@ -4,7 +4,6 @@
 
 #ifndef RISCCOMPILER_ASTNODE_H
 #define RISCCOMPILER_ASTNODE_H
-#include <memory>
 #include <string>
 #include <utility>
 #include <vector>
@@ -14,6 +13,9 @@ template<typename T>
 //standard vector shorthand
 using VEC = std::vector<T>;
 
+/**
+ * Enum for AST node types
+ */
 enum class ASTNodeType {
     Variable,
     Definition,
@@ -24,10 +26,14 @@ enum class ASTNodeType {
 class ASTNode {
 public:
     ASTNodeType type;
+
     // possibly add meta type/subtype
+
+
     STR nodeName;
     STR value;
     VEC<ASTNode> children;
+
     // Line and Column MetaData
     int line;
     int column;
@@ -44,6 +50,12 @@ public:
      */
     explicit ASTNode(const ASTNodeType type, const int line, const int column, STR nodeName = "", STR value = "", VEC<ASTNode> children = {})
     : type(type), nodeName(std::move(nodeName)), value(std::move(value)), children(std::move(children)), line(line), column(column) {}
+
+    /**
+     * Nicely format AST nodes for printing
+     *
+     * @return Nicely formatted string representation of an AST node
+     */
     [[nodiscard]] STR prettyPrint() const;
 
     /**

@@ -3,13 +3,15 @@
 //
 
 //node generation
-#include "astnode/ASTNode.h"
 
 #ifndef RISCCOMPILER_AST_H
 #define RISCCOMPILER_AST_H
+#include "astnode/ASTNode.h"
 
 
 class AST {
+    ASTNode *startNode = nullptr;
+
 };
 
 
