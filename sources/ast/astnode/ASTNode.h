@@ -23,11 +23,21 @@ enum class ASTNodeType {
     Control
 };
 
+enum class SubType {
+    BinaryExpression,
+    Comparison,
+    UnaryExpression,
+    IfExpression,
+    WhileExpression,
+    NameStatement,
+    TypeStatement,
+    AssignmentStatement,
+};
+
 class ASTNode {
 public:
     ASTNodeType type;
-
-    // possibly add meta type/subtype
+    SubType subType;
 
 
     STR nodeName;
@@ -42,14 +52,17 @@ public:
      * Initialize standard AST node
      *
      * @param type generic type
+     * @param subtype sub/specific type information
      * @param line which line read from
      * @param column which item on the line it was built from
      * @param nodeName what is this node
      * @param value what does this node contain
      * @param children does this node have child nodes
      */
-    explicit ASTNode(const ASTNodeType type, const int line, const int column, STR nodeName = "", STR value = "", VEC<ASTNode> children = {})
-    : type(type), nodeName(std::move(nodeName)), value(std::move(value)), children(std::move(children)), line(line), column(column) {}
+    explicit ASTNode(const ASTNodeType type, const SubType subtype, const int line, const int column, STR nodeName = "", STR value = "", VEC<ASTNode> children = {})
+        : type(type), subType(subtype), nodeName(std::move(nodeName)), value(std::move(value)), children(std::move(children)),
+          line(line), column(column) {
+    }
 
     /**
      * Nicely format AST nodes for printing

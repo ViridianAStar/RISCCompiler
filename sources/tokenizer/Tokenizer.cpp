@@ -36,27 +36,25 @@ TVEC Tokenizer::lexLine(const STR& line, const int lnum) {
     words = std::move(refined);
 
     while (col < words.size()) {
-        const STR& word = words.at(col);
-
-        if (keywords.contains(word)) {
-            Token tok = Token(TT::Keyword, word, lnum, col);
+        if (const STR& word = words.at(col); keywords.contains(word)) {
+            auto tok = Token(TT::Keyword, word, lnum, col);
             tok.meta = keywords[word];
             toks.push_back(tok);
         } else if (operators.contains(word)) {
-            Token tok = Token(TT::Operator, word, lnum, col);
+            auto tok = Token(TT::Operator, word, lnum, col);
             tok.meta = operators[word];
             toks.push_back(tok);
         } else if (const std::regex pattern("^[0-9_]$"); std::regex_match(word, pattern)) {
-            Token tok = Token(TT::Data, word, lnum, col);
+            auto tok = Token(TT::Data, word, lnum, col);
             tok.meta = "Some Data";
             toks.push_back(tok);
         } else if (word == ";") {
-            Token tok = Token(TT::Semicolon, word, lnum, col);
+            auto tok = Token(TT::Semicolon, word, lnum, col);
             tok.meta = "Semicolon";
             toks.push_back(tok);
         } else {
             if (validID(word)) {
-                Token tok = Token(TT::Identifier, word, lnum, col);
+                auto tok = Token(TT::Identifier, word, lnum, col);
                 tok.meta = "Some Identifier";
                 toks.push_back(tok);
             }

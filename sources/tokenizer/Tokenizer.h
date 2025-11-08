@@ -34,7 +34,7 @@ enum class TokenType {
     Eof
 };
 
-#define TT TokenType
+using TT = TokenType;
 
 //inline STR keywords[] = {"int", "char", "if"};
 inline std::pmr::map<STR, STR> keywords = {{"int", "integer"}, {"else", "control flow"}, {"if", "control flow"}, {"while", "control flow"}};
