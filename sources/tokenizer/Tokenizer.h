@@ -59,7 +59,7 @@ struct Token {
 };
 
 class Tokenizer {
-//public:
+    public:
     /**
      * Validate that an identifier exists.
      *
@@ -77,7 +77,7 @@ class Tokenizer {
      */
     static TVEC lexLine(const STR &line, int lnum);
 
-    public:
+    //public:
     /**
      * Lex/Tokenize an entire file
      *
