@@ -9,7 +9,7 @@ STR ASTNode::prettyPrint() const {
     prettyNode.reserve(128);
     prettyNode.append("{\n");
     prettyNode.append("[Lin(" + std::to_string(line) + ") : Col(" + std::to_string(column) + ")]\n");
-    switch (type) {
+    switch (ASTNodeType Type = this->type) {
         case ASTNodeType::Variable:
             prettyNode.append("[Variable Node] (\n");
             break;

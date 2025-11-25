@@ -13,4 +13,5 @@ add_executable(RISCCompiler main.cpp
         sources/ast/astnode/ASTNode.h
         sources/parser/Parser.cpp
         sources/parser/Parser.h
+        sources/Exceptions/parsing_exception.cpp
 )

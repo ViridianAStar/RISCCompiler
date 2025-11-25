@@ -12,10 +12,11 @@ void recursivePrintNodes(const ASTNode& ast_node) {
 int main() {
     printf("This compiler provides no guarantees of code functionality. Writing functional code is left to you, the user.\n");
 
-    const STR text = "b => c;";
+    const STR text = "b => c; d = e;"; // passes! (expected)
     const TVEC line = Tokenizer::lexLine(text, 0);
-    for (const TVEC parsed = Parser::compressTokens(line); auto & i : parsed) {
-        printf("%s\n", i.value.c_str());
+    for (const ANVEC nodes = Parser::parseLine(line); const auto& working : nodes) {
+        STR printout = working.prettyPrint();
+        printf("%s\n", printout.c_str());
     }
 
     printf("This compiler provides no guarantees of code functionality. Writing functional code is left to you, the user.\n");

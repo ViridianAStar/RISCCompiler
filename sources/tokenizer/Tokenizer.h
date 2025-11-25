@@ -11,6 +11,7 @@
 #include <regex>
 #include <algorithm>
 #include <map>
+#include <unordered_map>
 
 struct Token;
 template<typename T>
@@ -37,9 +38,9 @@ enum class TokenType {
 using TT = TokenType;
 
 //inline STR keywords[] = {"int", "char", "if"};
-inline std::pmr::map<STR, STR> keywords = {{"int", "integer"}, {"else", "control flow"}, {"if", "control flow"}, {"while", "control flow"}};
+inline std::pmr::unordered_map<STR, STR> keywords = {{"int", "integer"}, {"else", "control flow"}, {"if", "control flow"}, {"while", "control flow"}, {"for", "control flow"}};
 //inline STR operators[] = {"*", "+", "/", "-", "="};
-inline std::pmr::map<STR, STR> operators = {{"*", "binary expression multiplication"}, {"+", "binary expression addition"},
+inline std::pmr::unordered_map<STR, STR> operators = {{"*", "binary expression multiplication"}, {"+", "binary expression addition"},
     {"/", "binary expression division"}, {"-", "binary expression subtraction"}, {"=", "assignment"}, {"<", "less than comparison"}, {">", "greater than comparison"},
     {"&", "bitwise and"}, {"!", "bitwise not"}, {"|", "bitwise or"}};
 
