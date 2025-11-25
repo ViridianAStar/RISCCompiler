@@ -57,6 +57,10 @@ struct Token {
 
     Token(const TokenType type, STR value, const int line, const int column, STR meta = "No MetaData")
         : type(type), value(std::move(value)), line(line), column(column), meta(std::move(meta)) {}
+
+    void decCol() {
+        column--;
+    }
 };
 
 class Tokenizer {

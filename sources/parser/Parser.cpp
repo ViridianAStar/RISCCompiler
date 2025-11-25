@@ -7,7 +7,7 @@
 
 // Need way to error check and validate that multi line tokens are correct!
 
-TVEC Parser::compressTokens(const TVEC &tokens) {
+TVEC Parser::compressTokens(TVEC tokens) {
     TVEC outputTokens = {};
 
     for (int i = 0; i < tokens.size(); i++) {
@@ -30,8 +30,7 @@ TVEC Parser::compressTokens(const TVEC &tokens) {
                 i++;
 
                 for (int k = i; k < tokens.size(); k++) {
-                    Token current = tokens[k];
-                    current.column--;
+                    tokens[k].decCol();
                 }
             }
         }
@@ -59,9 +58,11 @@ ANVEC Parser::parseLine(const TVEC &line) {
             case TT::Identifier:
                 output.emplace_back(STHierarchy[ST::NameStatement], ST::NameStatement, token.line, token.column,
                                          token.meta, token.value);
+                break;
             case TT::Data:
                 output.emplace_back(STHierarchy[ST::DataStatement], ST::DataStatement, token.line, token.column,
                                          token.meta, token.value);
+                break;
         }
     }
     return output;

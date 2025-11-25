@@ -36,7 +36,7 @@ public:
      * @param tokens unprocessed line of tokens
      * @return processed line of tokens
      */
-    static TVEC compressTokens(const TVEC &tokens);
+    static TVEC compressTokens(TVEC tokens);
 
     /**
      * Parse a line of tokens into a vector of AST nodes.
