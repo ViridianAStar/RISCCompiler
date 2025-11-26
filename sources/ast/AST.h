@@ -7,11 +7,21 @@
 #ifndef RISCCOMPILER_AST_H
 #define RISCCOMPILER_AST_H
 #include "astnode/ASTNode.h"
+#include "../Exceptions/AST_exception.cpp"
 
+using STR = std::string;
+template<typename T>
+using VEC = std::vector<T>;
+using ANT = ASTNodeType;
+using ST = SubType;
+template<typename K, typename V>
+using MAP = std::pmr::unordered_map<K, V>;
+using ANVEC = VEC<ASTNode>;
 
 class AST {
-    ASTNode *startNode = nullptr;
+    ASTNode startNode = ASTNode(ASTNodeType::File, ST::Collection, -1, -1, "Program");
 
+    static ASTNode compressNodes(const ANVEC &line);
 };
 
 

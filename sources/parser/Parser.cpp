@@ -53,8 +53,8 @@ ANVEC Parser::parseLine(const TVEC &line) {
                 if (rebindOperator.contains(token.value)) {
                     output.emplace_back(STHierarchy[rebindOperator[token.value]], rebindOperator[token.value],
                                              token.line, token.column, token.meta, token.value);
-                    break;
                 }
+                break;
             case TT::Identifier:
                 output.emplace_back(STHierarchy[ST::NameStatement], ST::NameStatement, token.line, token.column,
                                          token.meta, token.value);

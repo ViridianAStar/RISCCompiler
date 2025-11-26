@@ -16,7 +16,9 @@ enum class ASTNodeType {
     Variable,
     Definition,
     Operation,
-    Control
+    Control,
+    File,
+    Line
 };
 
 enum class SubType {
@@ -31,6 +33,7 @@ enum class SubType {
     DataStatement,
     MacroStatement,
     FunctionStatement,
+    Collection
 };
 
 using STR = std::string;
@@ -43,7 +46,7 @@ using MAP = std::pmr::unordered_map<K, V>;
 
 inline MAP<ST, ANT> STHierarchy = {{ST::BinaryExpression, ANT::Control}, {ST::Comparison, ANT::Control}, {ST::UnaryExpression, ANT::Operation},
     {ST::IfExpression, ANT::Control}, {ST::WhileExpression, ANT::Control}, {ST::NameStatement, ANT::Variable}, {ST::TypeStatement, ANT::Variable},
-    {ST::AssignmentStatement, ANT::Definition}, {ST::FunctionStatement, ANT::Definition}, {ST::MacroStatement, ANT::Definition},
+    {ST::AssignmentStatement, ANT::Operation}, {ST::FunctionStatement, ANT::Definition}, {ST::MacroStatement, ANT::Definition},
     {ST::DataStatement, ANT::Variable}};
 
 class ASTNode {

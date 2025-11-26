@@ -3,6 +3,7 @@
 //
 
 #include "ASTNode.h"
+#include "../../Exceptions/AST_exception.cpp"
 
 STR ASTNode::prettyPrint() const {
     STR prettyNode;
@@ -21,6 +22,12 @@ STR ASTNode::prettyPrint() const {
             break;
         case ASTNodeType::Control:
             prettyNode.append("[Control Node]\n (\n");
+            break;
+        case ASTNodeType::File:
+            prettyNode.append("[File Node]\n (\n");
+            break;
+        case ASTNodeType::Line:
+            prettyNode.append("[Line Node]\n (\n");
             break;
     }
     prettyNode.append("    [nodeName : " + nodeName + "]\n");
