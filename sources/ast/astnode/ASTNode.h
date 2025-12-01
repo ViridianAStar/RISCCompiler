@@ -44,7 +44,7 @@ using ST = SubType;
 template<typename K, typename V>
 using MAP = std::pmr::unordered_map<K, V>;
 
-inline MAP<ST, ANT> STHierarchy = {{ST::BinaryExpression, ANT::Control}, {ST::Comparison, ANT::Control}, {ST::UnaryExpression, ANT::Operation},
+inline MAP<ST, ANT> STHierarchy = {{ST::BinaryExpression, ANT::Operation}, {ST::Comparison, ANT::Operation}, {ST::UnaryExpression, ANT::Operation},
     {ST::IfExpression, ANT::Control}, {ST::WhileExpression, ANT::Control}, {ST::NameStatement, ANT::Variable}, {ST::TypeStatement, ANT::Variable},
     {ST::AssignmentStatement, ANT::Operation}, {ST::FunctionStatement, ANT::Definition}, {ST::MacroStatement, ANT::Definition},
     {ST::DataStatement, ANT::Variable}};

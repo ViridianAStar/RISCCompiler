@@ -4,6 +4,9 @@
 
 
 class RiscV {
+    /**
+     * Enum of all RISC-V operations
+     */
     enum operationTable {
         add,
         addi,
@@ -80,6 +83,9 @@ class RiscV {
         nop
     };
 
+    /**
+     * List of all registers and their names. Implement switch to x0-x31
+     */
     enum regTable {
         zero,
         ra,
@@ -114,6 +120,7 @@ class RiscV {
         t5,
         t6
     };
+
     public:
     /**
      * Create Translator Mappings

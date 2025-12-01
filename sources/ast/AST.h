@@ -19,6 +19,7 @@ using MAP = std::pmr::unordered_map<K, V>;
 using ANVEC = VEC<ASTNode>;
 
 class AST {
+public:
     ASTNode startNode = ASTNode(ASTNodeType::File, ST::Collection, -1, -1, "Program");
 
     static ANVEC operationsProcessor(ANVEC partialLine); // impl later

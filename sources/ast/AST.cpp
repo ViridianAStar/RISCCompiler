@@ -4,6 +4,11 @@
 
 #include "AST.h"
 
+ANVEC AST::operationsProcessor(ANVEC partialLine) {
+    return {}; // TODO later. Potentially invent lambda calculus or something idk.
+}
+
+
 ASTNode AST::compressNodes(const ANVEC &line) {
     auto output = ASTNode(ANT::Line, ST::Collection, line[0].line, -1, std::to_string(line[0].line));
     for (int i = 0; i < line.size(); i++) {
@@ -18,7 +23,7 @@ ASTNode AST::compressNodes(const ANVEC &line) {
             case ASTNodeType::Variable:
                 // TODO: Extend these cases. int i = 0 works but what about int i = func(0)?
                 if (node.subType == ST::DataStatement || node.subType == ST::NameStatement) {
-                    break;
+                    printf("Did this");
                 } else if (node.subType == ST::TypeStatement) {
                     if (i != 0 && i + 3 != line.size() - 1) {
                         auto next = line[i + 1];
@@ -28,9 +33,11 @@ ASTNode AST::compressNodes(const ANVEC &line) {
                                 next.addChild(node);
                                 over.addChild(next);
                                 over.addChild(final);
+                                output.addChild(over);
                                 i += 3; // Simplest case gets reprocessed and translates later.
                             } else if (final.type == ANT::Operation) {
                                 // TODO: Process this like a regular operation
+                                // for now we can assume operations can only be done one at a time.
                             }
                         } else {
                             throw AST_exception("Incomplete statements on line: ", node.line, "!");
@@ -49,11 +56,23 @@ ASTNode AST::compressNodes(const ANVEC &line) {
                     if (const auto& next = line[i + 1]; next.type == ANT::Variable) {
                         if (next.subType == ST::NameStatement || next.subType == ST::DataStatement) {
                             node.addChild(next);
+                            output.addChild(node);
                             i += 1; // TODO: Extend these cases
+                            // for now assume operations can only be done one at a time.
                         }
                     }
                 } else if (node.subType == ST::BinaryExpression) {
-                    break; // TODO: Process these. 2 + 2 is easy but what about 3+4+5 or x*7+6?
+                    if (i!=0 || i + 1 != line.size()) {
+                        const auto& previous = line[i - 1];
+                        if (const auto& next = line[i+1]; (previous.subType == ST::DataStatement || previous.subType == ST::NameStatement) &&  (next.subType == ST::NameStatement || next.subType == ST::DataStatement)) {
+                            node.addChild(previous);
+                            node.addChild(next);
+                            output.addChild(node);
+                            i += 1;
+                        }
+                    }
+                    // TODO: Process these. 2 + 2 is easy but what about 3+4+5 or x*7+6?
+                    // for now assume operations can only be done one at a time.
                 }
                 break;
 
