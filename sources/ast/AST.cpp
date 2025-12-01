@@ -23,12 +23,15 @@ ASTNode AST::compressNodes(const ANVEC &line) {
                     if (i != 0 && i + 3 != line.size() - 1) {
                         auto next = line[i + 1];
                         auto over = line[i + 2];
-                        if (const auto& final = line[i + 3]; next.subType == ST::NameStatement && over.subType == ST::AssignmentStatement && final.
-                                                             subType == ST::DataStatement) {
-                            next.addChild(node);
-                            over.addChild(next);
-                            over.addChild(final);
-                            i += 3;
+                        if (const auto& final = line[i + 3]; next.subType == ST::NameStatement && over.subType == ST::AssignmentStatement) {
+                            if ( final.subType == ST::DataStatement || final.subType == ST::NameStatement) {
+                                next.addChild(node);
+                                over.addChild(next);
+                                over.addChild(final);
+                                i += 3; // Simplest case gets reprocessed and translates later.
+                            } else if (final.type == ANT::Operation) {
+                                // TODO: Process this like a regular operation
+                            }
                         } else {
                             throw AST_exception("Incomplete statements on line: ", node.line, "!");
                         }
@@ -40,12 +43,13 @@ ASTNode AST::compressNodes(const ANVEC &line) {
                 break;
             case ANT::Definition:
             case ANT::Control:
-                break;
+                break; // These don't have easy process paths and require incredible branching
             case ANT::Operation:
                 if (node.subType == ST::UnaryExpression) {
                     if (const auto& next = line[i + 1]; next.type == ANT::Variable) {
                         if (next.subType == ST::NameStatement || next.subType == ST::DataStatement) {
-                            node.addChild(next); // TODO: Extend these cases
+                            node.addChild(next);
+                            i += 1; // TODO: Extend these cases
                         }
                     }
                 } else if (node.subType == ST::BinaryExpression) {

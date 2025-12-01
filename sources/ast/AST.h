@@ -21,6 +21,8 @@ using ANVEC = VEC<ASTNode>;
 class AST {
     ASTNode startNode = ASTNode(ASTNodeType::File, ST::Collection, -1, -1, "Program");
 
+    static ANVEC operationsProcessor(ANVEC partialLine); // impl later
+
     static ASTNode compressNodes(const ANVEC &line);
 };
 
