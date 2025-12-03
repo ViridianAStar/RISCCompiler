@@ -1,4 +1,5 @@
 #include "includes.h"
+#include <elfio/elfio.hpp>
 
 void recursivePrintNodes(const ASTNode& ast_node) {
     printf("%s", ast_node.prettyPrint().c_str());
@@ -20,7 +21,6 @@ int main() {
     }
     const ASTNode tree = AST::compressNodes(parsedLine);
     recursivePrintNodes(tree);
-
 
     printf("This compiler provides no guarantees of code functionality. Writing functional code is left to you, the user.\n");
     return 0;

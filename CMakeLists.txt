@@ -1,9 +1,13 @@
-cmake_minimum_required(VERSION 4.0)
+cmake_minimum_required(VERSION 3.15)
 project(RISCCompiler)
 
 set(CMAKE_CXX_STANDARD 23)
 
-add_executable(RISCCompiler main.cpp
+find_package(elfio)
+
+
+add_executable(RISCCompiler
+        main.cpp
         includes.h
         sources/tokenizer/Tokenizer.cpp
         sources/tokenizer/Tokenizer.h
@@ -17,3 +21,6 @@ add_executable(RISCCompiler main.cpp
         sources/Exceptions/AST_exception.cpp
         sources/ast/translators/RiscV/RiscV.cpp
 )
+
+
+target_link_libraries(RISCCompiler elfio::elfio)
