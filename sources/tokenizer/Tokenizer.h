@@ -10,7 +10,6 @@
 #include <vector>
 #include <regex>
 #include <algorithm>
-#include <map>
 #include <unordered_map>
 
 struct Token;
@@ -29,6 +28,7 @@ enum class TokenType {
     Identifier,
     Keyword,
     Operator,
+    ControlOperator,
     Data,
     Semicolon,
     Eol,
@@ -42,7 +42,7 @@ inline std::pmr::unordered_map<STR, STR> keywords = {{"int", "integer"}, {"else"
 //inline STR operators[] = {"*", "+", "/", "-", "="};
 inline std::pmr::unordered_map<STR, STR> operators = {{"*", "binary expression multiplication"}, {"+", "binary expression addition"},
     {"/", "binary expression division"}, {"-", "binary expression subtraction"}, {"=", "assignment"}, {"<", "less than comparison"}, {">", "greater than comparison"},
-    {"&", "bitwise and"}, {"!", "bitwise not"}, {"|", "bitwise or"}};
+    {"&", "bitwise and"}, {"!", "bitwise not"}, {"|", "bitwise or"}, {"(", "grouping start"}, {")", "grouping end"}};
 
 
 /**

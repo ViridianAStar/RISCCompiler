@@ -45,6 +45,7 @@ ANVEC Parser::parseLine(const TVEC &line) {
     ANVEC output = {};
     for (const auto &token: workingLine) {
         switch (token.type) {
+            case TT::ControlOperator:
             case TT::Operator:
             case TT::Keyword:
             case TT::Semicolon:

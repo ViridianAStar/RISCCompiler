@@ -15,10 +15,10 @@ int main() {
 
     const STR text0 = "1 + 1";
     const TVEC line = Tokenizer::lexLine(text0, 0);
-    const ANVEC parsedLine = Parser::parseLine(line);
-    for (const ASTNode& ast_node : parsedLine) {
+    ANVEC parsedLine = Parser::parseLine(line);
+    /*for (const ASTNode& ast_node : parsedLine) {
         printf("%s", ast_node.prettyPrint().c_str());
-    }
+    }*/
     const ASTNode tree = AST::compressNodes(parsedLine);
     recursivePrintNodes(tree);
 

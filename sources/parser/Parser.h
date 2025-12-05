@@ -5,9 +5,9 @@
 #ifndef RISCCOMPILER_PARSER_H
 #define RISCCOMPILER_PARSER_H
 
-#include "../tokenizer/Tokenizer.h"
-#include "../ast/astnode/ASTNode.h"
 #include <string>
+#include "../ast/astnode/ASTNode.h"
+#include "../tokenizer/Tokenizer.h"
 //#include <map>
 #include <unordered_map>
 
@@ -26,7 +26,7 @@ inline MAP<STR, ST> rebindOperator = {{"*", ST::BinaryExpression}, {"+", ST::Bin
     {"--", ST::UnaryExpression},{"!", ST::UnaryExpression}, {"!=", ST::Comparison}, {"|", ST::BinaryExpression},
     {"&", ST::BinaryExpression},{"<=", ST::Comparison}, {"=>", ST::Comparison}, {"|>", ST::BinaryExpression},
     {"<|", ST::BinaryExpression}, {"int", ST::TypeStatement}, {"if", ST::IfExpression}, {"else", ST::IfExpression},
-    {"while", ST::WhileExpression}, {"for", ST::WhileExpression}};
+    {"while", ST::WhileExpression}, {"for", ST::WhileExpression}, {"(", ST::Collection}, {")", ST::Collection}};
 
 class Parser {
 public:
