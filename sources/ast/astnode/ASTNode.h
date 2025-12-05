@@ -18,7 +18,8 @@ enum class ASTNodeType {
     Operation,
     Control,
     File,
-    Line
+    Line,
+    Branch
 };
 
 enum class SubType {
@@ -47,7 +48,7 @@ using MAP = std::pmr::unordered_map<K, V>;
 inline MAP<ST, ANT> STHierarchy = {{ST::BinaryExpression, ANT::Operation}, {ST::Comparison, ANT::Operation}, {ST::UnaryExpression, ANT::Operation},
     {ST::IfExpression, ANT::Control}, {ST::WhileExpression, ANT::Control}, {ST::NameStatement, ANT::Variable}, {ST::TypeStatement, ANT::Variable},
     {ST::AssignmentStatement, ANT::Operation}, {ST::FunctionStatement, ANT::Definition}, {ST::MacroStatement, ANT::Definition},
-    {ST::DataStatement, ANT::Variable}};
+    {ST::DataStatement, ANT::Variable}, {ST::Collection, ANT::Control}};
 
 class ASTNode {
 public:
@@ -84,7 +85,7 @@ public:
      *
      * @return Nicely formatted string representation of an AST node
      */
-    [[nodiscard]] STR prettyPrint() const;
+    [[nodiscard]] STR prettyPrint(int indentLevel) const;
 
     /**
      * add child to list of child nodes

@@ -1,82 +1,142 @@
-//
-// Created by bowma on 11/5/2025.
-//
+#include "./AST.h"
 
-#include "AST.h"
+ASTNode AST::compressCollectionNode(const ANVEC &line, int &i) {
+    if (i >= line.size() || line[i].type != ANT::Control || line[i].nodeName != "grouping start") throw AST_exception("Expected grouping start");
 
-ANVEC AST::operationsProcessor(ANVEC partialLine) {
-    return {}; // TODO later. Potentially invent lambda calculus or something idk.
+    ANVEC compress;
+    int depth = 1;
+    const int startIndex = i + 1;
+
+    for (int j = startIndex; j < line.size(); j++) {
+        const auto &working = line[j];
+
+        if (working.type == ANT::Control) {
+            if (working.nodeName == "grouping start") depth++;
+            else if (working.nodeName == "grouping end") {
+                depth--;
+                if (depth == 0) {
+                    i = j;
+                    break;
+                }
+            }
+        }
+
+        if (depth > 0) {
+            compress.push_back(working);
+        }
+    }
+
+    if (depth != 0)
+        throw AST_exception("Unmatched parentheses");
+
+    ASTNode branchedNode = compressNodes(compress);
+
+    branchedNode.line = line[i].line;
+    branchedNode.column = line[i].column;
+
+    return branchedNode;
 }
 
+ASTNode AST::compressNodes(ANVEC &line) {
+    auto output = ASTNode(
+        ANT::Line,
+        ST::Collection,
+        line[0].line,
+        -1,
+        std::to_string(line[0].line)
+    );
 
-ASTNode AST::compressNodes(const ANVEC &line) {
-    auto output = ASTNode(ANT::Line, ST::Collection, line[0].line, -1, std::to_string(line[0].line));
     for (int i = 0; i < line.size(); i++) {
-        auto node = line[i];
+        auto &node = line[i];
+
+        if (node.type == ANT::Control && node.nodeName == "grouping start") {
+            if (ASTNode branchNode = compressCollectionNode(line, i);
+                branchNode.type == ASTNodeType::Line && branchNode.children.size() == 1) {
+
+                output.addChild(branchNode.children[0]);
+            } else {
+                output.addChild(branchNode);
+            }
+            continue;
+        }
+
         switch (node.type) {
             case ASTNodeType::File:
-                throw AST_exception("Only one file node allowed at this time. line:", node.line, "!");
-                break;
+            case ASTNodeType::Branch:
             case ASTNodeType::Line:
-                throw AST_exception("Lines cannot contain lines! line ", node.line, "!");
-                break;
-            case ASTNodeType::Variable:
-                // TODO: Extend these cases. int i = 0 works but what about int i = func(0)?
+                throw AST_exception("Lines cannot contain lines, files, or branches at this time! line ", node.line,
+                                    "!");
+
+            case ASTNodeType::Variable: {
                 if (node.subType == ST::DataStatement || node.subType == ST::NameStatement) {
-                    printf("Did this");
-                } else if (node.subType == ST::TypeStatement) {
-                    if (i != 0 && i + 3 != line.size() - 1) {
-                        auto next = line[i + 1];
-                        auto over = line[i + 2];
-                        if (const auto& final = line[i + 3]; next.subType == ST::NameStatement && over.subType == ST::AssignmentStatement) {
-                            if ( final.subType == ST::DataStatement || final.subType == ST::NameStatement) {
-                                next.addChild(node);
-                                over.addChild(next);
-                                over.addChild(final);
-                                output.addChild(over);
-                                i += 3; // Simplest case gets reprocessed and translates later.
-                            } else if (final.type == ANT::Operation) {
-                                // TODO: Process this like a regular operation
-                                // for now we can assume operations can only be done one at a time.
-                            }
-                        } else {
-                            throw AST_exception("Incomplete statements on line: ", node.line, "!");
-                        }
-                        break;
-                    } else {
-                        throw AST_exception("Incomplete statements on line: ", node.line, "!");
-                    }
+                    break;
                 }
-                break;
+                if (node.subType == ST::TypeStatement) {
+                    if (i + 3 >= line.size())
+                        throw AST_exception("Incomplete statements on line: ", node.line, "!");
+
+                    auto &next = line[i + 1];
+                    auto &over = line[i + 2];
+                    auto &final = line[i + 3];
+
+                    if (next.subType == ST::NameStatement &&
+                        over.subType == ST::AssignmentStatement) {
+                        if (final.subType == ST::DataStatement || final.subType == ST::NameStatement) {
+                            next.addChild(node);
+                            over.addChild(next);
+                            over.addChild(final);
+                            output.addChild(over);
+                            i += 3;
+                        } else if (final.type == ANT::Control && final.nodeName == "grouping start") {
+                            i += 2;
+                            ASTNode branchNode = compressCollectionNode(line, i);
+                            next.addChild(node);
+                            over.addChild(next);
+                            over.addChild(branchNode);
+                            output.addChild(over);
+                        }
+                    } else throw AST_exception("Incomplete statements on line: ", node.line, "!");
+                }
+            }
+            break;
+
             case ANT::Definition:
             case ANT::Control:
-                break; // These don't have easy process paths and require incredible branching
+
+                if (node.subType == ST::Collection) {
+                    ASTNode branchNode = compressCollectionNode(line, i);
+                    output.addChild(branchNode);
+                }
+                break;
+
             case ANT::Operation:
                 if (node.subType == ST::UnaryExpression) {
-                    if (const auto& next = line[i + 1]; next.type == ANT::Variable) {
-                        if (next.subType == ST::NameStatement || next.subType == ST::DataStatement) {
+                    if (i + 1 < line.size()) {
+                        if (auto &next = line[i + 1]; next.type == ANT::Variable &&
+                                                      (next.subType == ST::NameStatement || next.subType ==
+                                                       ST::DataStatement)) {
                             node.addChild(next);
                             output.addChild(node);
-                            i += 1; // TODO: Extend these cases
-                            // for now assume operations can only be done one at a time.
+                            i += 1;
                         }
                     }
                 } else if (node.subType == ST::BinaryExpression) {
-                    if (i!=0 || i + 1 != line.size()) {
-                        const auto& previous = line[i - 1];
-                        if (const auto& next = line[i+1]; (previous.subType == ST::DataStatement || previous.subType == ST::NameStatement) &&  (next.subType == ST::NameStatement || next.subType == ST::DataStatement)) {
+                    if (i > 0 && i + 1 < line.size()) {
+                        auto &previous = line[i - 1];
+
+                        if (auto &next = line[i + 1];
+                            (previous.subType == ST::DataStatement || previous.subType == ST::NameStatement) &&
+                            (next.subType == ST::NameStatement || next.subType == ST::DataStatement)) {
                             node.addChild(previous);
                             node.addChild(next);
                             output.addChild(node);
                             i += 1;
                         }
                     }
-                    // TODO: Process these. 2 + 2 is easy but what about 3+4+5 or x*7+6?
-                    // for now assume operations can only be done one at a time.
                 }
                 break;
-
         }
     }
+
     return output;
 }

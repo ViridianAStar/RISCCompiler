@@ -3,41 +3,36 @@
 //
 
 #include "Parser.h"
-#include "../Exceptions/parsing_exception.cpp"
+//#include "../Exceptions/parsing_exception.cpp"
 
 // Need way to error check and validate that multi line tokens are correct!
 
-TVEC Parser::compressTokens(TVEC tokens) {
+TVEC Parser::compressTokens(const TVEC &tokens) {
     TVEC outputTokens = {};
 
     for (int i = 0; i < tokens.size(); i++) {
-        Token output_Token = tokens[i];
+        Token current_Token = tokens[i];
 
-        if (Token const &current_Token = tokens[i]; current_Token.type == TT::Operator) {
-            if (i == tokens.size() - 1) {
-                throw parsing_exception("Lines should end with a semicolon! Line: ", current_Token.line,
-                                        current_Token.value);
-            }
 
-            if (Token const &next_Token = tokens[i + 1]; next_Token.type == TT::Operator) {
-                const STR value = current_Token.value + next_Token.value;
+        if (current_Token.type == TT::Operator && i + 1 < tokens.size()) {
+            const Token& next_Token = tokens[i + 1];
 
-                if (!rebindOperator.contains(value) || !multiCharOp.contains(value)) {
-                    throw parsing_exception("Symbol not recognize on line ", 1, value);
-                }
 
-                output_Token = Token(TT::Operator, value, current_Token.line, current_Token.column, multiCharOp[value]);
+
+            if (STR combined = current_Token.value + next_Token.value; multiCharOp.contains(combined)) {
+                current_Token.value = combined;
+                current_Token.meta = multiCharOp[combined];
+                current_Token.type = TT::Operator;
                 i++;
-
-                for (int k = i; k < tokens.size(); k++) {
-                    tokens[k].decCol();
-                }
             }
         }
-        outputTokens.push_back(output_Token);
+
+        outputTokens.push_back(current_Token);
     }
+
     return outputTokens;
 }
+
 
 
 ANVEC Parser::parseLine(const TVEC &line) {
@@ -45,6 +40,7 @@ ANVEC Parser::parseLine(const TVEC &line) {
     ANVEC output = {};
     for (const auto &token: workingLine) {
         switch (token.type) {
+            case TT::ControlOperator:
             case TT::Operator:
             case TT::Keyword:
             case TT::Semicolon:

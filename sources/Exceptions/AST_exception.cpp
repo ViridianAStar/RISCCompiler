@@ -4,7 +4,7 @@
 
 #include <stdexcept>
 
-class AST_exception : public std::runtime_error {
+class AST_exception final : public std::runtime_error {
     public:
     explicit AST_exception(const char* msg) : std::runtime_error(msg) {}
 

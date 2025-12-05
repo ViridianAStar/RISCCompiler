@@ -5,41 +5,51 @@
 #include "ASTNode.h"
 #include "../../Exceptions/AST_exception.cpp"
 
-STR ASTNode::prettyPrint() const {
+STR ASTNode::prettyPrint(const int indentLevel = 0) const {
     STR prettyNode;
-    prettyNode.reserve(128);
-    prettyNode.append("{\n");
-    prettyNode.append("[Lin(" + std::to_string(line) + ") : Col(" + std::to_string(column) + ")]\n");
+    prettyNode.reserve(256);
+
+    const STR indent(indentLevel * 4, ':');
+
+    prettyNode.append(indent + "{\n");
+    prettyNode.append(indent + "[Line: " + std::to_string(line) + ", Col: " + std::to_string(column) + "]\n");
+
     switch (ASTNodeType Type = this->type) {
         case ASTNodeType::Variable:
-            prettyNode.append("[Variable Node] (\n");
+            prettyNode.append(indent + "[Variable Node] (" + nodeName + " : " + value + ")\n");
             break;
         case ASTNodeType::Definition:
-            prettyNode.append("[Definition Node] (\n");
+            prettyNode.append(indent + "[Definition Node] (" + nodeName + " : " + value + ")\n");
             break;
         case ASTNodeType::Operation:
-            prettyNode.append("[Operation Node] (\n");
+            prettyNode.append(indent + "[Operation Node] (" + nodeName + " : " + value + ")\n");
             break;
         case ASTNodeType::Control:
-            prettyNode.append("[Control Node]\n (\n");
+            prettyNode.append(indent + "[Control Node] (" + nodeName + ")\n");
             break;
         case ASTNodeType::File:
-            prettyNode.append("[File Node]\n (\n");
+            prettyNode.append(indent + "[File Node]\n");
             break;
         case ASTNodeType::Line:
-            prettyNode.append("[Line Node]\n (\n");
+            prettyNode.append(indent + "[Line Node]\n");
+            break;
+        case ASTNodeType::Branch:
+            prettyNode.append(indent + "[Branch Node]\n");
             break;
     }
-    prettyNode.append("    [nodeName : " + nodeName + "]\n");
-    prettyNode.append("    [value : " + value + "]\n");
-    if (!children.empty()) {
-        for (const auto& child : children) {
-            prettyNode.append("    [" + child.nodeName + " : " + child.value + "]\n");
-        }
+
+
+    for (const auto& child : children) {
+        prettyNode.append(indent + "::[>\n");
+        prettyNode.append(child.prettyPrint(indentLevel + 1));
+        prettyNode.append(indent + "::<]\n");
     }
-    prettyNode.append("  ) \n}\n");
+
+    prettyNode.append(indent + "}\n");
     return prettyNode;
 }
+
+
 
 void ASTNode::addChild(const ASTNode& child) {
     children.push_back(child);

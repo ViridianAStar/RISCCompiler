@@ -27,7 +27,7 @@ TVEC Tokenizer::lexLine(const STR& line, const int lnum) {
               std::istream_iterator<STR>(),
               [&](const STR& s) { words.push_back(s); });
 
-    static const std::regex delims(R"(([^+\-/*<>=&~;\n]+)|([+\-/*<>=&~;]))");
+    static const std::regex delims(R"(([^+\-*/<>=&~;,(){}\[\]!| \n]+)|([+\-*/<>=&~;,(){}\[\]!|]))");
     VEC<STR> refined;
     for (const auto& w : words) {
         for (std::sregex_iterator it(w.begin(), w.end(), delims), end; it != end; ++it)
@@ -41,10 +41,16 @@ TVEC Tokenizer::lexLine(const STR& line, const int lnum) {
             tok.meta = keywords[word];
             toks.push_back(tok);
         } else if (operators.contains(word)) {
-            auto tok = Token(TT::Operator, word, lnum, col);
-            tok.meta = operators[word];
-            toks.push_back(tok);
-        } else if (const std::regex pattern("^[0-9_]$"); std::regex_match(word, pattern)) {
+            if (word == "(" || word == ")") {
+                auto tok = Token(TT::ControlOperator, word, lnum, col);
+                tok.meta = operators[word];
+                toks.push_back(tok);
+            } else {
+                auto tok = Token(TT::Operator, word, lnum, col);
+                tok.meta = operators[word];
+                toks.push_back(tok);
+            }
+        } else if (const std::regex pattern("^[0-9]+(\\.[0-9]+)?$"); std::regex_match(word, pattern)) {
             auto tok = Token(TT::Data, word, lnum, col);
             tok.meta = "Some Data";
             toks.push_back(tok);
