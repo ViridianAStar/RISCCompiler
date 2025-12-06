@@ -34,7 +34,11 @@ enum class SubType {
     DataStatement,
     MacroStatement,
     FunctionStatement,
-    Collection
+    Collection,
+    ScopeStart,
+    ScopeEnd,
+    BunchStart,
+    BunchEnd
 };
 
 using STR = std::string;
@@ -48,7 +52,8 @@ using MAP = std::pmr::unordered_map<K, V>;
 inline MAP<ST, ANT> STHierarchy = {{ST::BinaryExpression, ANT::Operation}, {ST::Comparison, ANT::Operation}, {ST::UnaryExpression, ANT::Operation},
     {ST::IfExpression, ANT::Control}, {ST::WhileExpression, ANT::Control}, {ST::NameStatement, ANT::Variable}, {ST::TypeStatement, ANT::Variable},
     {ST::AssignmentStatement, ANT::Operation}, {ST::FunctionStatement, ANT::Definition}, {ST::MacroStatement, ANT::Definition},
-    {ST::DataStatement, ANT::Variable}, {ST::Collection, ANT::Control}};
+    {ST::DataStatement, ANT::Variable}, {ST::BunchStart, ANT::Control}, {ST::BunchEnd, ANT::Control}, {ST::ScopeStart, ANT::Control},
+    {ST::ScopeEnd, ANT::Control}};
 
 class ASTNode {
 public:

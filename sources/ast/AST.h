@@ -23,11 +23,9 @@ class AST {
 public:
     ASTNode startNode = ASTNode(ASTNodeType::File, ST::Collection, -1, -1, "Program");
 
-    static ANVEC operationsProcessor(const ANVEC& partialLine); // impl later
-
     static ASTNode compressNodes(ANVEC &line);
 
-    static ASTNode compressCollectionNode(const ANVEC &line, int &i);
+    static ASTNode compressBunchNode(const ANVEC &line, int &i);
 
 };
 
