@@ -6,7 +6,7 @@ ASTNode AST::compressBunchNode(const ANVEC &line, int &i) {
     if (i >= line.size() ||
         line[i].type != ANT::Control ||
         line[i].subType != ST::BunchStart)
-        throw AST_exception("Expected grouping start");
+        throw AST_exception("Expected grouping start", line[i].line);
 
     ANVEC compress;
     int depth = 1;
@@ -32,8 +32,7 @@ ASTNode AST::compressBunchNode(const ANVEC &line, int &i) {
         }
     }
 
-    if (depth != 0)
-        throw AST_exception("Unmatched parentheses");
+    if (depth != 0) throw AST_exception("Unmatched parentheses", line[i].line);
 
     ASTNode branchedNode = compressNodes(compress);
 
@@ -52,6 +51,10 @@ ASTNode AST::compressNodes(ANVEC &line) {
         -1,
         "Line"
         );
+
+    LinePratt parser(line);
+    const ASTNode expr = parser.parseExpression();
+    output.addChild(expr);
 
     return output;
 }
