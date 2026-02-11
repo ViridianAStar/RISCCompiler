@@ -33,6 +33,5 @@ int main() {
     printf(tree.prettyPrint(0).c_str());
     printf("\nStage3\n");
 
-    printf("This compiler provides no guarantees of code functionality. Writing functional code is left to you, the user.\n");
     return 0;
 }

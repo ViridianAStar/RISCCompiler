@@ -55,6 +55,8 @@ inline MAP<ST, ANT> STHierarchy = {{ST::BinaryExpression, ANT::Operation}, {ST::
     {ST::DataStatement, ANT::Variable}, {ST::BunchStart, ANT::Control}, {ST::BunchEnd, ANT::Control}, {ST::ScopeStart, ANT::Control},
     {ST::ScopeEnd, ANT::Control}};
 
+// TODO: Lets define an integer that functionally means larger is greater in precedence. Using this lets have it act as a helper for building our AST
+
 class ASTNode {
 public:
     ASTNodeType type;

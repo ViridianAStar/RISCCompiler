@@ -52,10 +52,6 @@ ASTNode AST::compressNodes(ANVEC &line) {
         "Line"
         );
 
-    LinePratt parser(line);
-    const ASTNode expr = parser.parseExpression();
-    output.addChild(expr);
-
     return output;
 }
 
